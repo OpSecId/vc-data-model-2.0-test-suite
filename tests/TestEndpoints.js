@@ -26,7 +26,8 @@ export class TestEndpoints {
   async issue(credential) {
     const {issuer} = this;
     const issueBody = createRequestBody({issuer, vc: credential});
-    return post(issuer, issueBody);
+    const response = await post(issuer, issueBody)
+    return response.verifiableCredential;
   }
   async createVp({presentation, options = {}}) {
     return createVp({presentation, options});

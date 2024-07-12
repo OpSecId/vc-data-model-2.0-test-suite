@@ -82,7 +82,6 @@ describe('Contexts', function() {
           // positive @context test
           const vc = await endpoints.issue(require(
             './input/credential-ok.json'));
-          console.log(vc)
           vc.should.have.property('@context');
           // negative @context test
           await assert.rejects(endpoints.issue(
@@ -227,8 +226,8 @@ describe('Types', function() {
         await assert.rejects(endpoints.issue(require(
           './input/credential-type-mapped-nonurl-fail.json')));
         // type not mapped: fail
-        // await assert.rejects(endpoints.issue(require(
-        //   './input/credential-type-unmapped-fail.json')));
+        await assert.rejects(endpoints.issue(require(
+          './input/credential-type-unmapped-fail.json')));
       });
       it('type property: "If more than one URL is provided, the URLs ' +
         'MUST be interpreted as an unordered set."', async function() {
@@ -240,53 +239,6 @@ describe('Types', function() {
         await endpoints.issue(require(
           './input/credential-type-urls-order-2-ok.json'));
       });
-      // FIXME this needs to be expanded into at least 6 different tests
-      // Verifiable Credential MUST have a type specified
-      // Verifiable Presentation MUST have a type specified
-      // Proof MUST have a type specified.
-      // credentialStatus MUST have a type specified.
-      // termsOfUse MUST have a type specified.
-      // evidence MUST have a type specified.
-      // it('list: "objects that MUST have a type specified."',
-      //   async function() {
-      //     this.test.link = `https://w3c.github.io/vc-data-model/#types:~:text=the%20following%20table%20lists%20the%20objects%20that%20MUST%20have%20a%20type%20specified.`;
-      //     // (Verifiable) credential requires type VerifiableCredential
-      //     // (Verifiable) presentation requires type VerifiablePresentation
-      //     // Additional (more specific) types for these are optional.
-      //     // Missing type property is tested separately.
-      //     await endpoints.issue(require(
-      //       './input/credential-optional-type-ok.json'));
-      //     await assert.rejects(endpoints.issue(require(
-      //       './input/credential-missing-required-type-fail.json')));
-      //     const presentationOptionalType = await endpoints.createVp({
-      //       presentation: require('./input/presentation-optional-type-ok.json'),
-      //       options: createOptions
-      //     });
-      //     await endpoints.verifyVp(
-      //       presentationOptionalType,
-      //       verifyPresentationOptions
-      //     );
-      //     await assert.rejects(
-      //       endpoints.verifyVp(require(
-      //         './input/presentation-missing-required-type-fail.json')));
-      //     // Other objects requiring type: proof, credentialStatus, termsOfUse,
-      //     // and evidence.
-      //     // Note: testing proof requires the issuer to allow the input
-      //     // credential to have an existing proof property.
-      //     await endpoints.issue(require('./input/credential-proof-ok.json'));
-      //     await assert.rejects(endpoints.verify(require(
-      //       './input/credential-proof-missing-type-fail.json')));
-      //     await endpoints.issue(require('./input/credential-status-ok.json'));
-      //     await assert.rejects(endpoints.issue(require(
-      //       './input/credential-status-missing-type-fail.json')));
-      //     await endpoints.issue(require(
-      //       './input/credential-termsofuse-ok.json'));
-      //     await assert.rejects(endpoints.issue(require(
-      //       './input/credential-termsofuse-missing-type-fail.json')));
-      //     await endpoints.issue(require('./input/credential-evidence-ok.json'));
-      //     await assert.rejects(endpoints.issue(require(
-      //       './input/credential-evidence-missing-type-fail.json')));
-      //   });
       it.skip('All credentials, presentations, and encapsulated objects ' +
         'SHOULD specify, or be associated with, additional more narrow types ' +
         '(like ExampleDegreeCredential, for example) so software systems ' +
@@ -412,8 +364,8 @@ describe('Credential Subject', function() {
         this.test.link = `https://w3c.github.io/vc-data-model/#credential-subject:~:text=The%20value%20of%20the%20credentialSubject%20property%20is%20defined%20as%20a%20set%20of%20objects%20where%20each%20object%20MUST%20be%20the%20subject%20of%20one%20or%20more%20claims%2C%20which%20MUST%20be%20serialized%20inside%20the%20credentialSubject%20property.`;
         await assert.rejects(endpoints.issue(require(
           './input/credential-subject-no-claims-fail.json')));
-        // await endpoints.issue(require(
-        //   './input/credential-subject-multiple-ok.json'));
+        await endpoints.issue(require(
+          './input/credential-subject-multiple-ok.json'));
         await assert.rejects(
           endpoints.issue(require(
             './input/credential-subject-multiple-empty-fail.json')));
@@ -620,86 +572,86 @@ describe('Securing Mechanisms', function() {
   }
 });
 
-// // 4.10 Status https://w3c.github.io/vc-data-model/#status
-// describe('Status', function() {
-//   setupMatrix.call(this);
-//   for(const [name, implementation] of match) {
-//     const endpoints = new TestEndpoints({implementation, tag});
-//     const createOptions = {challenge};
-//     const verifyPresentationOptions = {
-//       checks: ['proof'],
-//       challenge
-//     };
+// 4.10 Status https://w3c.github.io/vc-data-model/#status
+describe('Status', function() {
+  setupMatrix.call(this);
+  for(const [name, implementation] of match) {
+    const endpoints = new TestEndpoints({implementation, tag});
+    const createOptions = {challenge};
+    const verifyPresentationOptions = {
+      checks: ['proof'],
+      challenge
+    };
 
-//     describe(name, function() {
-//       beforeEach(addPerTestMetadata);
+    describe(name, function() {
+      beforeEach(addPerTestMetadata);
 
-//       it('If present (credentialStatus.id), the normative guidance ' +
-//         'in Section 4.3 Identifiers MUST be followed.', async function() {
-//         this.test.link = `https://w3c.github.io/vc-data-model/#status:~:text=credential%20status%20object.-,If%20present%2C%20the%20normative%20guidance%20in%20Section%204.3%20Identifiers%20MUST%20be%20followed.,-type`;
-//         // id is optional
-//         await endpoints.issue(require(
-//           './input/credential-status-missing-id-ok.json'));
-//         await assert.rejects(endpoints.issue(require(
-//           './input/credential-status-multiple-id-fail.json')));
-//         await assert.rejects(endpoints.issue(require(
-//           './input/credential-status-nonurl-id-fail.json')));
-//       });
-//       it('(If a credentialStatus property is present), The type ' +
-//         'property is REQUIRED. It is used to express the type of status ' +
-//         'information expressed by the object. The related normative ' +
-//         'guidance in Section 4.4 Types MUST be followed.', async function() {
-//         this.test.link = `https://w3c.github.io/vc-data-model/#status:~:text=The%20type%20property%20is%20REQUIRED.%20It%20is%20used%20to%20express%20the%20type%20of%20status%20information%20expressed%20by%20the%20object.%20The%20related%20normative%20guidance%20in%20Section%204.4%20Types%20MUST%20be%20followed.`;
-//         await assert.rejects(endpoints.issue(require(
-//           './input/credential-status-missing-type-fail.json')));
-//         await assert.rejects(endpoints.issue(require(
-//           './input/credential-status-type-nonurl-fail.json')));
-//         await endpoints.issue(require(
-//           './input/credential-status-ok.json'));
-//       });
-//       it.skip('Status schemes MUST NOT be implemented in ways that enable ' +
-//         'tracking of individuals', async function() {
-//         this.test.link = `https://w3c.github.io/vc-data-model/#status:~:text=Status%20schemes%20MUST%20NOT%20be%20implemented%20in%20ways%20that%20enable%20tracking%20of%20individuals`;
-//         // not testable with automation
-//       });
+      it('If present (credentialStatus.id), the normative guidance ' +
+        'in Section 4.3 Identifiers MUST be followed.', async function() {
+        this.test.link = `https://w3c.github.io/vc-data-model/#status:~:text=credential%20status%20object.-,If%20present%2C%20the%20normative%20guidance%20in%20Section%204.3%20Identifiers%20MUST%20be%20followed.,-type`;
+        // id is optional
+        await endpoints.issue(require(
+          './input/credential-status-missing-id-ok.json'));
+        await assert.rejects(endpoints.issue(require(
+          './input/credential-status-multiple-id-fail.json')));
+        await assert.rejects(endpoints.issue(require(
+          './input/credential-status-nonurl-id-fail.json')));
+      });
+      it('(If a credentialStatus property is present), The type ' +
+        'property is REQUIRED. It is used to express the type of status ' +
+        'information expressed by the object. The related normative ' +
+        'guidance in Section 4.4 Types MUST be followed.', async function() {
+        this.test.link = `https://w3c.github.io/vc-data-model/#status:~:text=The%20type%20property%20is%20REQUIRED.%20It%20is%20used%20to%20express%20the%20type%20of%20status%20information%20expressed%20by%20the%20object.%20The%20related%20normative%20guidance%20in%20Section%204.4%20Types%20MUST%20be%20followed.`;
+        await assert.rejects(endpoints.issue(require(
+          './input/credential-status-missing-type-fail.json')));
+        await assert.rejects(endpoints.issue(require(
+          './input/credential-status-type-nonurl-fail.json')));
+        await endpoints.issue(require(
+          './input/credential-status-ok.json'));
+      });
+      it.skip('Status schemes MUST NOT be implemented in ways that enable ' +
+        'tracking of individuals', async function() {
+        this.test.link = `https://w3c.github.io/vc-data-model/#status:~:text=Status%20schemes%20MUST%20NOT%20be%20implemented%20in%20ways%20that%20enable%20tracking%20of%20individuals`;
+        // not testable with automation
+      });
 
-//       it('In Verifiable Presentations, the verifiableCredential ' +
-//         'property MAY be present. The value MUST be an array of one or more ' +
-//         'verifiable credential graphs in a cryptographically verifiable ' +
-//         'format.', async function() {
-//         //FIXME remove the internal prove once VC-API presentation
-//         //creation is stabilized
-//         const presentationWithCredential = await endpoints.createVp({
-//           presentation: require('./input/presentation-vc-ok.json'),
-//           options: createOptions
-//         });
-//         await endpoints.verifyVp(
-//           presentationWithCredential,
-//           verifyPresentationOptions
-//         );
-//         // FIXME support for derived VCs is not standard yet
-//         // and probably will be its own test suite
-//         //await endpoints.verifyVp(require(
-//         //  './input/presentation-derived-vc-ok.json'));
+      it('In Verifiable Presentations, the verifiableCredential ' +
+        'property MAY be present. The value MUST be an array of one or more ' +
+        'verifiable credential graphs in a cryptographically verifiable ' +
+        'format.', async function() {
+        //FIXME remove the internal prove once VC-API presentation
+        //creation is stabilized
+        const presentationWithCredential = await endpoints.createVp({
+          presentation: require('./input/presentation-vc-ok.json'),
+          options: createOptions
+        });
+        await endpoints.verifyVp(
+          presentationWithCredential,
+          verifyPresentationOptions
+        );
+        // FIXME support for derived VCs is not standard yet
+        // and probably will be its own test suite
+        //await endpoints.verifyVp(require(
+        //  './input/presentation-derived-vc-ok.json'));
 
-//         // FIXME remove internal prove once VC-API presentation
-//         // creation is finalized
-//         const presentationWithCredentials = await endpoints.createVp({
-//           presentation: require('./input/presentation-multiple-vc-ok.json'),
-//           options: createOptions
-//         });
-//         await endpoints.verifyVp(
-//           presentationWithCredentials,
-//           verifyPresentationOptions
-//         );
-//         await assert.rejects(endpoints.verifyVp(require(
-//           './input/presentation-vc-missing-required-type-fail.json')));
-//         await assert.rejects(endpoints.verifyVp(require(
-//           './input/presentation-derived-vc-missing-required-type-fail.json')));
-//       });
-//     });
-//   }
-// });
+        // FIXME remove internal prove once VC-API presentation
+        // creation is finalized
+        const presentationWithCredentials = await endpoints.createVp({
+          presentation: require('./input/presentation-multiple-vc-ok.json'),
+          options: createOptions
+        });
+        await endpoints.verifyVp(
+          presentationWithCredentials,
+          verifyPresentationOptions
+        );
+        await assert.rejects(endpoints.verifyVp(require(
+          './input/presentation-vc-missing-required-type-fail.json')));
+        await assert.rejects(endpoints.verifyVp(require(
+          './input/presentation-derived-vc-missing-required-type-fail.json')));
+      });
+    });
+  }
+});
 
 // 5. Advanced Concepts https://w3c.github.io/vc-data-model/#advanced-concepts
 describe('Advanced', function() {
@@ -727,34 +679,29 @@ describe('Advanced', function() {
         await endpoints.issue(require('./input/credential-schema-ok.json'));
         await endpoints.issue(require('./input/credential-schemas-ok.json'));
       });
-      // it('Each credentialSchema MUST specify its type (for example, ' +
-      //   'JsonSchemaValidator2018), and an id property.', async function() {
-      //   await assert.rejects(endpoints.issue(require(
-      //     './input/credential-schema-no-type-fail.json')));
-      //   await assert.rejects(endpoints.issue(require(
-      //     './input/credential-schema-no-id-fail.json')));
-      // });
-      // it('credentialSchema id MUST be a URL identifying the schema ' +
-      //   'file.', async function() {
-      //   await assert.rejects(endpoints.issue(require(
-      //     './input/credential-schema-non-url-id-fail.json')));
-      // });
-      it.skip('The value of the refreshService property MUST be one or more ' +
+      it('Each credentialSchema MUST specify its type (for example, ' +
+        'JsonSchemaValidator2018), and an id property.', async function() {
+        await assert.rejects(endpoints.issue(require(
+          './input/credential-schema-no-type-fail.json')));
+        await assert.rejects(endpoints.issue(require(
+          './input/credential-schema-no-id-fail.json')));
+      });
+      it('credentialSchema id MUST be a URL identifying the schema ' +
+        'file.', async function() {
+        await assert.rejects(endpoints.issue(require(
+          './input/credential-schema-non-url-id-fail.json')));
+      });
+      it('The value of the refreshService property MUST be one or more ' +
         'refresh services that provides enough information to the ' +
         'recipient\'s software such that the recipient can refresh the ' +
         'verifiable credential.', async function() {
         await endpoints.issue(require('./input/credential-refresh-ok.json'));
         await endpoints.issue(require('./input/credential-refreshs-ok.json'));
       });
-      it.skip('Each refreshService value MUST specify its type (for example, ' +
-        'ManualRefreshService2018) and its id, which is the URL of the ' +
-        'service.', async function() {
+      it('Each refreshService value MUST specify its type (for example, ' +
+        'ManualRefreshService2018)', async function() {
         await assert.rejects(endpoints.issue(require(
           './input/credential-refresh-no-type-fail.json')));
-        await assert.rejects(endpoints.issue(require(
-          './input/credential-refresh-no-id-fail.json')));
-        await assert.rejects(endpoints.issue(require(
-          './input/credential-refresh-non-url-id-fail.json')));
       });
       it('The value of the termsOfUse property MUST specify one or ' +
         'more terms of use policies under which the creator issued the ' +
@@ -762,14 +709,14 @@ describe('Advanced', function() {
         await endpoints.issue(require(
           './input/credential-termsofuses-ok.json'));
       });
-      // it('Each termsOfUse value MUST specify its type, for example, ' +
-      //   'IssuerPolicy, and MAY specify its instance id.', async function() {
-      //   await assert.rejects(endpoints.issue(require(
-      //     './input/credential-termsofuse-no-type-fail.json')));
-      //   await endpoints.issue(require(
-      //     './input/credential-termsofuse-id-ok.json'));
-      // });
-      it('The value of the evidence property MUST be one or more ' +
+      it('Each termsOfUse value MUST specify its type, for example, ' +
+        'IssuerPolicy, and MAY specify its instance id.', async function() {
+        await assert.rejects(endpoints.issue(require(
+          './input/credential-termsofuse-no-type-fail.json')));
+        await endpoints.issue(require(
+          './input/credential-termsofuse-id-ok.json'));
+      });
+      it.skip('The value of the evidence property MUST be one or more ' +
         'evidence schemes providing enough information for a verifier to ' +
         'determine whether the evidence gathered by the issuer meets its ' +
         'confidence requirements for relying on the credential.',

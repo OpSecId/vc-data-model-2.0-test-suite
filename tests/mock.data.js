@@ -19,9 +19,6 @@ export const createRequestBody = ({issuer, vc = validVc}) => {
     credential.issuer = credential?.issuer || id;
   }
   
-  // convert from millisecond to seconds precision
-  // credential.issuanceDate = createISOTimeStamp();
-  // credential.issuer = id;
   return {
     credential,
     options
