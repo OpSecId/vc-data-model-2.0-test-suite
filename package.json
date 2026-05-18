@@ -36,7 +36,6 @@
     "undici": "^6.24.1",
     "@digitalbazaar/zcap": "^9.0.1",
     "@digitalbazaar/http-client": "^4.3.0",
-    "jsonld-signatures": "^11.6.0",
     "jsonld": "^8.3.3"
   },
   "bugs": {
