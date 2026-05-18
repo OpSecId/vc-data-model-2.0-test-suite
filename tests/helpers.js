@@ -1,5 +1,6 @@
 import {challenge} from './fixtures.js';
 import {makeZcapRequest} from './zcapHandler.js';
+import {extractIssuedCredential} from './response.js';
 
 export function setupMatrix(match, columnLabel) {
   // this will tell the report
@@ -49,14 +50,14 @@ export const secureCredential = async ({
   const body = {credential, options};
   if(issuer.settings.zcap) {
     const response = await makeZcapRequest(issuer.settings, body);
-    return response?.data?.verifiableCredential;
+    return extractIssuedCredential(response?.data);
   } else {
     const {data, result, error} = await issuer.post({json: body});
     if(!result || !result.ok) {
       error;
       throw new Error('Request rejected.');
     }
-    return data;
+    return extractIssuedCredential(data);
   }
 };
 

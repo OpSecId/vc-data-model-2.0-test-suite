@@ -9,6 +9,7 @@ import {
   createRequestBody,
   createVerifyRequestBody
 } from './mock.data.js';
+import {extractIssuedCredential} from './response.js';
 import http from 'http';
 import receiveJson from './receive-json.js';
 
@@ -26,7 +27,7 @@ export class TestEndpoints {
   async issue(credential) {
     const {issuer} = this;
     const issueBody = createRequestBody({issuer, vc: credential});
-    return post(issuer, issueBody);
+    return extractIssuedCredential(await post(issuer, issueBody));
   }
   // FIXME implement createVp for implementation endpoints in the future
   // @see https://w3c-ccg.github.io/vc-api/#create-presentation
