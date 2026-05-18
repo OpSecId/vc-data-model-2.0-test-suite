@@ -1,6 +1,6 @@
 import {challenge} from './fixtures.js';
-import {makeZcapRequest} from './zcapHandler.js';
 import {extractIssuedCredential} from './response.js';
+import {makeZcapRequest} from './zcapHandler.js';
 
 export function setupMatrix(match, columnLabel) {
   // this will tell the report
