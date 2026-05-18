@@ -19,6 +19,7 @@ module.exports = {
   },
   rules: {
     'jsdoc/check-examples': 0,
+    'jsdoc/newline-after-description': 'off',
     'max-len': ['error', {ignorePattern: '\\* SPDX-License-Identifier: ',
       ignoreUrls: true}]
   }
