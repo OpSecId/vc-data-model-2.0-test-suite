@@ -9,7 +9,7 @@
  * Implementations may return the VC directly, or wrapped as either
  * `verifiableCredential` (VC-API) or `credential` (legacy/alternate).
  *
- * @param {object} data - Parsed JSON response body from POST /credentials/issue.
+ * @param {object} data - Parsed JSON from POST /credentials/issue.
  * @returns {object} The issued verifiable credential.
  */
 export function extractIssuedCredential(data) {
